@@ -1,0 +1,45 @@
+<div *ngIf="listaAfines.length > 0" class="card m-3 col-12">
+    <div class="row g-0">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-12">
+                    <img src="{{listaAfines[0].foto}}" class="img-fluid rounded-start">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 d-flex justify-content-center g-3">
+                    <button (click)="like()" class="btn-primary rounded-circle" style="border-color: red; width: 70px; height: 70px;">
+                        <i class="bi bi-heart-fill" style="color:white; font-size: 2rem;"></i>
+                    </button>
+                </div>
+                <div class="col-6 d-flex justify-content-center g-3">
+                    <button (click)="dislike()" class="btn-primary rounded-circle" style="background-color: blue; border-color: blue; width: 70px; height: 70px;">
+                        <i class="bi bi-x-lg" style="color:white; font-size: 2rem;"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card-body">
+                <span class="d-flex">
+                <i class="bi bi-circle-fill me-3 align-self-center {{listaAfines[0].iconoConectado}}"></i><h2 class="card-title align-self-center">{{listaAfines[0].nombre}} {{listaAfines[0].apellidos}}, {{listaAfines[0].edad}}</h2>
+                </span>
+                <p class="card-text">
+                    <i class="bi bi-pin-map-fill me-3"></i>
+                    {{listaAfines[0].ciudad}}
+                </p>
+                <p class="card-text">
+                    <i class="bi bi-{{listaAfines[0].iconoGenero}} me-3"></i>
+                    {{listaAfines[0].genero}}
+                </p>
+                <p class="card-text">
+                    <i class="bi bi-person-square me-3"></i>
+                    {{listaAfines[0].hijos}} hijos
+                </p>
+                <h6 class="card-text">{{listaAfines[0].descripcion}}</h6>
+                
+                <p class="card-text"><small class="text-muted">Tienes un {{listaAfines[0].porcentaje}}% de afinidad con {{listaAfines[0].nombre}}</small></p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -9,7 +9,7 @@
       <strong>Username</strong>
     </a>
     <ul class="dropdown-menu text-small shadow">
-      <li><a class="dropdown-item" href="#">Perfil</a></li>
+      <li><a class="dropdown-item" routerLink="perfil" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Perfil</a></li>
       <li><hr class="dropdown-divider"></li>
       <li><a class="dropdown-item" href="#">Cerrar sesión</a></li>
     </ul>
@@ -23,25 +23,25 @@
       </a>
     </li>
     <li>
-      <a routerLink="perfil" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link link-dark">
+      <a routerLink="listaGenteCerca" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link link-dark">
         <i class="bi bi-pin-map-fill me-2" width="16" height="16"></i>
         Gente cerca
       </a>
     </li>
     <li>
-      <a href="#" class="nav-link link-dark">
+      <a routerLink="listaMensajes" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link link-dark">
         <i class="bi bi-chat-dots-fill me-2" width="16" height="16"></i>
         Mensajes
       </a>
     </li>
     <li>
-      <a href="#" class="nav-link link-dark">
+      <a routerLink="listaLesGusto" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link link-dark">
         <i class="bi bi-heart-fill me-2" width="16" height="16"></i>
         Les gusto
       </a>
     </li>
     <li>
-      <a href="#" class="nav-link link-dark">
+      <a routerLink="listaAmigos" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link link-dark">
         <i class="bi bi-person-check-fill me-2" width="16" height="16"></i>
         Amigos
       </a>

@@ -1,7 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { PerfilReducido } from '../models/PerfilReducido';
+import { PerfilTarjeta } from '../models/PerfilTarjeta';
+import { PerfilTarjetaResponse } from '../models/PerfilTarjetaResponse';
 import { PerfilReducidoResponse } from '../models/req-resp';
 
 
@@ -10,19 +12,62 @@ import { PerfilReducidoResponse } from '../models/req-resp';
 })
 export class RestUserServicio {
 
-  public urlListado: string = 'http://127.0.0.1:8000/api/user/listarAfinidades/595';
-  public urlLike: string = 'http://127.0.0.1:8000/api/user/'
+  public baseURL: string = 'http://127.0.0.1:8000/api/user/';
+  public urlListadoAfinidades: string = 'listarAfinidades/';
+  public urlListadoAmigos: string = 'listarAmigos/';
+  public urlListadoGenteCerca: string = 'listarGenteCerca/';
+  public urlListadoLesGusto: string = 'listarLesGusto/';
   constructor(private http: HttpClient) { }
 
-  public getList() {
-    return this.http.get<PerfilReducidoResponse[]>(this.urlListado).pipe(
+  public getListaAfinidades(usuario: number) {
+    let url = this.baseURL + this.urlListadoAfinidades + usuario.toString();
+    
+    return this.http.get<PerfilReducidoResponse[]>(url).pipe(
       map((resp:PerfilReducidoResponse[]) => {
         return resp.map(lA => PerfilReducido.listaAfinesFromJSON(lA))
       })
     );
   }
 
-  public darLike() {
+  public getListaAmigos(usuario: number) {
+    let url = this.baseURL + this.urlListadoAmigos + usuario.toString();
     
+    return this.http.get<PerfilTarjeta[]>(url).pipe(
+      map((resp:PerfilTarjetaResponse[]) => {
+        return resp.map(lA => PerfilTarjeta.perfilTarjetaFromJSON(lA))
+      })
+    );
+  }
+
+  public getListadoGenteCerca(usuario: number) {
+    let url = this.baseURL + this.urlListadoGenteCerca + usuario.toString();
+    
+    return this.http.get<PerfilTarjeta[]>(url).pipe(
+      map((resp:PerfilTarjetaResponse[]) => {
+        return resp.map(lA => PerfilTarjeta.perfilTarjetaFromJSON(lA))
+      })
+    );
+  }
+
+  public getListadoLesGusto(usuario: number) {
+    let url = this.baseURL + this.urlListadoLesGusto + usuario.toString();
+    
+    return this.http.get<PerfilTarjeta[]>(url).pipe(
+      map((resp:PerfilTarjetaResponse[]) => {
+        return resp.map(lA => PerfilTarjeta.perfilTarjetaFromJSON(lA))
+      })
+    );
+  }
+
+  public darLike(id_o: number, id_d: number) {
+    let url = this.baseURL + 'like';
+    let data = {
+      "id_o": id_o,
+      "id_d": id_d
+    }
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.post<any>(url, data, {headers: headers});
   }
 }

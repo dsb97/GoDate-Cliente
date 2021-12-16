@@ -1,30 +1,15 @@
 <div class="container-fluid g-0">
-   
-        <!--<div *ngIf="false;else elseBlock" class="row">
-            <app-navbar class="col-3"></app-navbar>
-            <div class="col-7">
-                <h1>{{title}}</h1>
-            </div>
-        </div>
-        <ng-template #elseBlock class="row">
-            <app-navbar class="col-5"></app-navbar>
-            <div class="col-5">
-                <h1>{{title}} ghrjfigyuitep</h1>
-            </div>
-        </ng-template>-->
-        <div class="row">
+    <div *ngIf="this.router.url.includes('/home'); else loggedOut" class="row">
         <app-navbar class="col-3"></app-navbar>
         <div class="col-9">
-            <div class="row">
-                <router-outlet></router-outlet>
-                <!--<app-listado-gente-afin></app-listado-gente-afin>-->
-            </div>
+            <router-outlet></router-outlet>
             <div class="row">
                 <app-footer></app-footer>
             </div>
         </div>
     </div>
-   
+
+    <ng-template #loggedOut>
+        <router-outlet></router-outlet>
+    </ng-template>
 </div>
-
-

@@ -1,5 +1,5 @@
 <div class="container-fluid g-0">
-    <div class="row">
+    <div *ngIf="this.router.url.includes('/home'); else loggedOut" class="row">
         <app-navbar class="col-3"></app-navbar>
         <div class="col-9">
             <router-outlet></router-outlet>
@@ -8,4 +8,8 @@
             </div>
         </div>
     </div>
+
+    <ng-template #loggedOut>
+        <router-outlet></router-outlet>
+    </ng-template>
 </div>

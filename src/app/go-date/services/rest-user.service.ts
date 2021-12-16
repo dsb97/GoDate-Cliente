@@ -82,4 +82,12 @@ export class RestUserServicio {
     });
     return this.http.post<any>(url, data, {headers: headers});
   }
+
+  public cerrarSesion(id: number) {
+    let url = this.baseURL + 'cerrarSesion/' + id;
+    let data = {
+      "id": id
+    }
+    return this.http.get<any>(url);
+  }
 }

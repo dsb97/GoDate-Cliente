@@ -12,7 +12,3 @@ export interface PerfilReducidoResponse {
     activo:           number;
     porcentaje:       number;
 }
-
-export interface MatchResponse {
-    
-}

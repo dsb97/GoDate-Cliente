@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ListadoAmigosComponent } from './components/listado-amigos/listado-amigos.component';
 import { ListadoGenteAfinComponent } from './components/listado-gente-afin/listado-gente-afin.component';
+import { ListadoGenteCercaComponent } from './components/listado-gente-cerca/listado-gente-cerca.component';
+import { ListadoLesGustoComponent } from './components/listado-les-gusto/listado-les-gusto.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
 
 const routes: Routes = [
@@ -11,6 +14,18 @@ const routes: Routes = [
   {
     path: 'perfil',
     component: PerfilComponent
+  },
+  {
+    path: 'listaAmigos',
+    component: ListadoAmigosComponent
+  },
+  {
+    path: 'listaLesGusto',
+    component: ListadoLesGustoComponent
+  },
+  {
+    path: 'listaGenteCerca',
+    component: ListadoGenteCercaComponent
   }
 ];
 

@@ -70,4 +70,16 @@ export class RestUserServicio {
     });
     return this.http.post<any>(url, data, {headers: headers});
   }
+
+  public darDislike(id_o: number, id_d: number) {
+    let url = this.baseURL + 'dislike';
+    let data = {
+      "id_o": id_o,
+      "id_d": id_d
+    }
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.post<any>(url, data, {headers: headers});
+  }
 }

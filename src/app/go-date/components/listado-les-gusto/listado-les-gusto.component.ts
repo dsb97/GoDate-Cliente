@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from 'src/app/login/model/user';
 import { PerfilTarjeta } from '../../models/PerfilTarjeta';
 import { RestUserServicio } from '../../services/rest-user.service';
 
@@ -10,7 +11,7 @@ import { RestUserServicio } from '../../services/rest-user.service';
 export class ListadoLesGustoComponent implements OnInit {
 
   public listaLesGusto: PerfilTarjeta[] = [];
-  public myId: number = 595;
+  public user: User = JSON.parse(window.sessionStorage.getItem("user") || '{}');
 
   constructor(
     private restService: RestUserServicio
@@ -21,7 +22,7 @@ export class ListadoLesGustoComponent implements OnInit {
   }
 
   public getListadoLesGusto() {
-    this.restService.getListadoLesGusto(this.myId).subscribe(
+    this.restService.getListadoLesGusto(this.user.id).subscribe(
       (response) => {
         this.listaLesGusto = response;
     });

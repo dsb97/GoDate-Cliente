@@ -13,6 +13,10 @@ export class NavbarComponent implements OnInit {
 
   //variable
   public imgLogo: string;
+  public roles = {
+    "Administrador" : 1,
+    "Usuario" :  2
+  }
   public user: User = JSON.parse(window.sessionStorage.getItem('user') || '{}');
 
 

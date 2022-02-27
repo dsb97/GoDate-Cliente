@@ -4,5 +4,6 @@ export interface UserResponse {
     pass: string,
     nombre: string,
     apellidos: string,
-    foto: string
+    foto: string,
+    roles: number[]
 }

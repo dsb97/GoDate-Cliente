@@ -11,6 +11,10 @@ const routes: Routes = [
     loadChildren: () => import('./go-date/go-date.module').then((m) => m.GoDateModule)
   },
   {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

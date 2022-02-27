@@ -20,6 +20,13 @@
   </div>
   <hr>
   <ul class="nav nav-pills flex-column mb-auto">
+    <li *ngIf="this.user.roles.includes(this.roles.Administrador)">
+      <a routerLink="admin/usuarios" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link link-dark"
+        aria-current="page">
+        <i class="bi bi-list-ul me-2" width="16" height="16"></i>
+        Gestión de usuarios
+      </a>
+    </li>
     <li>
       <a routerLink="home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link link-dark"
         aria-current="page">

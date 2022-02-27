@@ -15,7 +15,11 @@ export class LoginComponent implements OnInit {
   public clase: string;
   login: FormGroup;
   submitted: boolean = false;
-  user?: User;
+  // user?: User;
+  public roles = {
+    "Administrador" : 1,
+    "Usuario" :  2
+  }
 
 
   constructor(private formBuilder: FormBuilder,
@@ -69,7 +73,7 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
     if (this.login.invalid) return;
 
-    this.user = new User(-1, '', '', '', '');
+    // this.user = new User(-1, '', '', '', '', []);
 
 
     this.restUserService.login(this.login.value.email, this.login.value.password).subscribe({

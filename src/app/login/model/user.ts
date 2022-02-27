@@ -8,7 +8,8 @@ export class User {
       obj['correo'],
       obj['nombre'],
       obj['apellidos'],
-      obj['foto']
+      obj['foto'],
+      obj['roles']
     );
   }
 
@@ -17,6 +18,7 @@ export class User {
     public correo: string,
     public nombre: string,
     public apellidos: string,
-    public foto: string
+    public foto: string,
+    public roles: number[]
     ){}
 }

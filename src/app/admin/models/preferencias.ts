@@ -13,6 +13,6 @@ export class Preferencias {
     constructor(
         public id: number,
         public descripcion: string,
-        public intentsidad: number
+        public intensidad: number
     ) { }
 }

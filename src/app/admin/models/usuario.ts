@@ -21,12 +21,14 @@ export class Usuario {
     public conectado: number,
     public activo: number,
     public correo?: string,
+    public pass?: string,
     public id_genero?: number,
     public fecha_nacimiento?:Date,
     public ciudad?: string,
     public descripcion?: string,
     public hijos?:number,
     public gustosGenero?: number[],
-    public preferencias?: Preferencias[]
+    public preferencias?: Preferencias[],
+    public roles?: number[]
     ){}
 }

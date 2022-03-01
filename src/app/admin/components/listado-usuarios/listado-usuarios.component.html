@@ -1,12 +1,13 @@
 <div class="row">
     <div class="col mt-1">
-        <h1>Listado de usuarios</h1>
+        <h1 class="h2">Listado de usuarios</h1>
+        <button class="btn btn-primary text-white">Nuevo usuario</button>
     </div>
 </div>
 <div class="row">
     <div class="col">
         <div class="container pt-5">
-            <table class="table table-striped table-hover border">
+            <table id="tablaDatos" class="table table-responsive table-striped table-hover pt-4">
                 <thead class="bg-primary bg-opacity-50">
                     <tr>
                         <th scope="col">#</th>
@@ -18,23 +19,30 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let usuario of this.listaUsuarios" role="button" class="user-select-none">
+                    <tr *ngFor="let usuario of this.listaUsuarios" class="user-select-none">
                         <th scope="row">{{usuario.id}}</th>
                         <td><img src="{{usuario.foto}}" height="32" width="32" class="rounded-circle" alt=""></td>
                         <td>{{usuario.nombre + ' ' + usuario.apellidos}}</td>
                         <td><i class="bi bi-circle-fill me-3 {{usuario.conectado === 0 ? 'n' : ''}}online"></i></td>
 
                         <td>
-                            <input *ngIf="usuario.activo; else elseBlock" type="checkbox" class="form-check-input"
-                                checked>
+                            <input *ngIf="usuario.activo; else elseBlock" role="button" type="checkbox"
+                                class="form-check-input" checked>
                             <ng-template #elseBlock>
-                                <input type="checkbox" class="form-check-input">
+                                <input role="button" type="checkbox" class="form-check-input">
                             </ng-template>
 
                         </td>
                         <td>
-                            <button class="btn btn-primary text-white"><i class="bi bi-pencil-fill"></i></button>
-                            <button class="btn btn-secondary ms-3"><i class="bi bi-trash-fill"></i></button>
+                            <div class="h-100 v-100 d-flex justify-content-between">
+                                <button (click)="editar(usuario.id)" class="btn btn-primary text-white ms-3"><i
+                                        class="bi bi-pencil-fill"></i></button>
+                                <ng-container *ngIf="this.loginService.getLoggedUser().id != usuario.id">
+                                    <button (click)="eliminar(usuario.id)" class="btn btn-secondary mx-3 ">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </ng-container>
+                            </div>
                         </td>
                     </tr>
 

@@ -8,6 +8,7 @@ export interface usuarioResponse {
     conectado: number,
     activo: number,
     correo?: string,
+    pass?: string,
     id_genero?: number,
     fecha_nacimiento?: Date,
     ciudad?: string,
@@ -15,4 +16,5 @@ export interface usuarioResponse {
     hijos?: number,
     gustosGenero?: number[],
     preferencias?: Preferencias[]
+    roles?: number[]
 }

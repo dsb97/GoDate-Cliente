@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { Usuario } from '../models/usuario';
@@ -26,5 +26,39 @@ export class AdminServiceService {
         return resp.map(lA => Usuario.usuarioFromJSON(lA))
       })
     );
+  }
+
+  public eliminarUsuario(id_usuario: Number) {
+    let url = this.baseURL + this.urlBorrarUsuario + id_usuario;
+    return this.http.delete<any>(url).pipe(
+      map((resp: any) => {
+        return resp;
+      })
+    );
+  }
+
+  public detalleUsuario(id_usuario: number) {
+    let url = this.baseURL + this.urlDetalleUsuario + id_usuario;
+    return this.http.get<Usuario>(url).pipe(
+      map((resp: Usuario) => {
+        return resp;
+      })
+    )
+  }
+
+  public actualizarUsuario(usuario: Usuario) {
+    let url = this.baseURL + this.urlActualizarUsuario;
+
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    
+    return this.http.post<any>(url, usuario, { headers: headers }).pipe(
+      map((resp: any) => {
+        return resp;
+      })
+    );
+
+
   }
 }

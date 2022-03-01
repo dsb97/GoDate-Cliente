@@ -1,0 +1,234 @@
+<div class="row">
+    <div class="col mt-1">
+        <h1 class="h2"><i role="button" (click)="volver()" class="h3 bi bi-chevron-left pe-2"></i>Editar usuario</h1>
+    </div>
+</div>
+<div class="container">
+    <form [formGroup]="this.formUsuario" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col">
+                <h2 class="h4 mt-3 border-bottom">Foto de perfil</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="file" role="button">
+                    <img class="rounded-circle" src="{{this.usuario.foto}}" alt="" height="100" width="100">
+                    <a class="btn btn-primary ms-3 text-white">Elegir nueva imagen de perfil</a>
+                </label>
+                <input hidden role="button" type="file" name="" id="file">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h2 class="h4 mt-5 border-bottom">Información básica</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input formControlName="nombre" id="nombre" type="text" class="form-control" placeholder="Nombre"
+                    aria-label="Nombre">
+            </div>
+            <div class="col">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input formControlName="apellidos" id="apellidos" type="text" class="form-control"
+                    placeholder="Apellidos" aria-label="Apellidos">
+            </div>
+        </div>
+        <div class="row pt-3">
+            <div class="col">
+                <label for="correo" class="form-label">Correo</label>
+                <input formControlName="correo" id="correo" type="text" class="form-control" placeholder="Correo"
+                    aria-label="Correo">
+            </div>
+            <div class="col">
+                <label for="pass" class="form-label">Contraseña</label>
+                <input formControlName="pass" id="pass" type="password" class="form-control" placeholder="Contraseña"
+                    aria-label="Contraseña">
+            </div>
+        </div>
+        <div class="row pt-3">
+            <div class="col">
+                <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento</label>
+                <input formControlName="fecha_nacimiento" id="fecha_nacimiento" type="date" class="form-control"
+                    placeholder="Fecha de nacimiento" aria-label="Fecha de nacimiento">
+            </div>
+            <div class="col">
+                <label for="ciudad" class="form-label">Ciudad de residencia</label>
+                <input formControlName="ciudad" id="ciudad" type="text" class="form-control" placeholder="Ciudad"
+                    aria-label="Ciudad">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <h2 class="h4 mt-5 border-bottom">Cuéntanos más sobre ti</h2>
+            </div>
+        </div>
+        <div class="row pt-3">
+            <div class="col">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea formControlName="descripcion" id="descripcion" class="form-control" rows="3"
+                    placeholder="Descríbete en algunas palabras para que los demás puedan conocerte mejor"></textarea>
+            </div>
+        </div>
+        <div class="row pt-3">
+            <div class="col">
+                <label for="hijos" class="form-label">Número de hijos</label>
+                <input formControlName="numHijos" id="hijos" type="number" class="form-control" value="0" min="0"
+                    max="100">
+            </div>
+            <div class="col">
+                <label for="genero" class="form-label">Género</label>
+                <select class="form-select" (change)="cambiarGenero($event)" formControlName="genero">
+                    <option value="" hidden>Seleccione uno...</option>
+                    <option *ngFor="let g of gustosGenero" [value]="g.id">
+                        {{ g.descripcion }}
+                    </option>
+                </select>
+                <!-- error block -->
+                <div class="invalid-feedback" *ngIf="submitted && formulario['genero'].invalid">
+                    <sup>*</sup>Por favor, seleccione uno
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h2 class="h4 mt-5">Preferencias, hobbies y actividades</h2>
+                <h2 class="h5 pt-3 border-bottom">Preferencias</h2>
+            </div>
+        </div>
+        <div class="row pt-3">
+            <div class="col pe-4">
+                <label for="gustosGenero" class="form-label">Género</label>
+                <div class="w-100 d-flex justify-content-between form-check">
+                    <ng-container *ngFor="let genero of this.gustosGenero">
+                        <label for="genero{{genero.descripcion.replace(' ', '_')}}" class="form-check-label">
+                            <input id="genero{{genero.descripcion.replace(' ', '_')}}" type="checkbox"
+                                [value]="genero.id" (change)="cambiarGustosGenero($event)" class="form-check-input"
+                                [checked]="this.usuario.gustosGenero?.includes(genero.id)" />
+
+                            {{genero.descripcion}}
+                        </label>
+                    </ng-container>
+
+                </div>
+                <!-- <p class="error" *ngIf="this.formUsuario.controls['gustosGenero'].errors?.['required']">
+                    Por favor, selecciona al menos algún género.
+                  </p> -->
+            </div>
+            <div class="col-3">
+                <label for="edadMinima" class="form-label">Edad mínima</label>
+                <input formControlName="edadMinima" type="number" id="edadMinima" class="form-control" name="">
+            </div>
+            <div class="col-3">
+                <label for="edadMaxima" class="form-label">Edad máxima</label>
+                <input formControlName="edadMaxima" type="number" id="edadMaxima" class="form-control" name="">
+            </div>
+        </div>
+        <div class="row pt-3">
+            <div class="col">
+                <label for="relacion" class="form-label">Relación</label>
+                <select class="form-select" (change)="cambiarRelacion($event)" formControlName="relacion">
+                    <option value="-1" hidden>Seleccione uno...</option>
+                    <option *ngFor="let tr of tipoRelacion" [value]="tr.intensidad">
+                        {{ tr.descripcion }}
+                    </option>
+                </select>
+                <!-- error block -->
+                <div class="invalid-feedback" *ngIf="submitted && formulario['relacion'].invalid">
+                    <sup>*</sup>Por favor, seleccione uno
+                </div>
+            </div>
+            <div class="col">
+                <label for="sinohijos">Hijos</label>
+                <br>
+                <br>
+                <label for="hijos" class="form-check-label">
+                    <input id="hijos" type="checkbox" class="form-check-input"
+                    (change)="cambiarPreferenciasHijos($event)"
+                    [checked]="this.buscarIntensidad(this.usuario.preferencias, '¿Quiero hijos?') > 0" />
+                    ¿Quiere tener hijos o más hijos?
+                </label>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h2 class="h5 pt-4 border-bottom">Hobbies y actividades</h2>
+            </div>
+        </div>
+        <div class="row pt-3">
+            <div class="col">
+                <label for="deportes" class="form-label">Deportes</label>
+                <div class="input-group mb-3">
+                    <input formControlName="deportes"  type="number" class="form-control" id="deportes" aria-describedby="addonDeportes">
+                    <span class="input-group-text" id="addonDeportes">%</span>
+                </div>
+            </div>
+            <div class="col">
+                <label for="arte" class="form-label">Arte</label>
+                <div class="input-group mb-3">
+                    <input formControlName="arte" type="number" class="form-control" id="arte" aria-describedby="addonArte">
+                    <span class="input-group-text" id="addonArte">%</span>
+                </div>
+            </div>
+        </div>
+        <div class="row pt-3">
+            <div class="col">
+                <label for="cultura" class="form-label">Cultura</label>
+                <div class="input-group mb-3">
+                    <input formControlName="cultura" type="cultura" class="form-control" id="cultura" aria-describedby="addonCultura">
+                    <span class="input-group-text" id="addonCultura">%</span>
+                </div>
+            </div>
+            <div class="col">
+                <label for="politica" class="form-label">Política</label>
+                <div class="input-group mb-3">
+                    <input formControlName="politica" type="number" class="form-control" id="politica" aria-describedby="addonPolitica">
+                    <span class="input-group-text" id="addonPolitica">%</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h2 class="h4 mt-5 border-bottom">Administración</h2>
+            </div>
+        </div>
+        <div class="row pt-3">
+            <div class="col-6 pe-4">
+                <label for="roles" class="form-label">Roles de acceso</label>
+                <div class="w-100 d-flex justify-content-between form-check">
+                    <ng-container *ngFor="let rol of this.roles">
+                        <label for="rol{{rol.descripcion}}" class="form-check-label">
+                            <input id="rol{{rol.descripcion}}" type="checkbox" [value]="rol.id"
+                                (change)="cambiarRoles($event)" class="form-check-input"
+                                [checked]="this.usuario.roles?.includes(rol.id)" />
+                            {{rol.descripcion}}
+                        </label>
+                    </ng-container>
+                </div>
+                <!-- <p class="error" *ngIf="this.formUsuario.controls['gustosGenero'].errors?.['required']">
+                    Por favor, selecciona al menos algún género.
+                  </p> -->
+            </div>
+            <div class="col-6">
+                <label for="roles" class="form-label">Activación de usuario</label>
+                <br>
+                <label for="activado" class="form-check-label">
+                    <input id="activado" type="checkbox" class="form-check-input" 
+                    (change)="cambiarActivo($event)"
+                    [checked]="this.usuario.activo == 1" />
+                    Activado
+                </label>
+            </div>
+        </div>
+        <div class="row pt-3">
+            <div class="col d-flex justify-content-end">
+                <input class="btn btn-secondary me-3" type="reset" value="Cancelar" (click)="onReset()" />
+                <input class="btn btn-primary text-white" type="submit" value="Guardar cambios" />
+            </div>
+        </div>
+    </form>
+</div>

@@ -9,7 +9,7 @@ import { User } from '../model/user';
 })
 export class LoginServiceService {
 
-  public static readonly SESSION_STORAGE_KEY: string = "usuario";
+  public static readonly SESSION_STORAGE_KEY: string = "user";
   public baseURL: string = 'http://127.0.0.1:8000/api/';
 
   constructor(private http: HttpClient) { }

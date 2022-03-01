@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col mt-1">
-        <h1 class="h2"><i role="button" (click)="volver()" class="h3 bi bi-chevron-left pe-2"></i>Editar usuario</h1>
+        <h1 class="h2"><i role="button" (click)="volver()" class="h3 bi bi-chevron-left pe-2"></i>{{this.tituloPantalla}}</h1>
     </div>
 </div>
 <div class="container">
@@ -82,7 +82,7 @@
             <div class="col">
                 <label for="genero" class="form-label">Género</label>
                 <select class="form-select" (change)="cambiarGenero($event)" formControlName="genero">
-                    <option value="" hidden>Seleccione uno...</option>
+                    <option value="-1" hidden>Seleccione uno...</option>
                     <option *ngFor="let g of gustosGenero" [value]="g.id">
                         {{ g.descripcion }}
                     </option>

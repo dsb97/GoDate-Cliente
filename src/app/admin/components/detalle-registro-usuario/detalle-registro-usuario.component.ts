@@ -16,6 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class DetalleRegistroUsuarioComponent implements OnInit {
 
+  public tituloPantalla = '';
   public idUsuario: number = 0;
   public modo?: number;
   public usuario!: Usuario;
@@ -78,19 +79,24 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
   async ngOnInit(): Promise<void> {
 
     await this.route.queryParams.subscribe(params => {
-      this.idUsuario = parseInt(params['id'] + '');
       this.modo = parseInt(params['modo'] + '');
-
       if (this.modo === this.modoEdicion.creacion) {
-        this.usuario = new Usuario(0, '', '', '', 0, 0);
+        this.idUsuario = 0;
+        this.usuario = new Usuario(0, '', '', 'https://picsum.photos/350', 0, 0);
+        this.rellenarFormulario();
+        this.tituloPantalla = 'Nuevo usuario';
       } else if (this.modo === this.modoEdicion.edicion) {
+        this.idUsuario = parseInt(params['id'] + '');
         this.adminService.detalleUsuario(this.idUsuario).subscribe({
           next: (res) => {
             this.usuario = res;
             this.rellenarFormulario();
           }
-        })
+        });
+        this.tituloPantalla = 'Editar usuario';
       }
+
+
     });
   }
 
@@ -224,20 +230,36 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
       console.log(invalid);
 
     } else {
-
       let usuarioModificado = this.generarUsuario();
+
+      if(this.modo === this.modoEdicion.creacion) {
+
+        this.adminService.nuevoUsuario(usuarioModificado).subscribe({
+          next: (respuesta) => {
+            this.toastr.success(respuesta.mensaje, '');
+            this.router.navigate(['/admin/usuarios']);
+          },
+          error: (error) => {
+            this.toastr.error(error.error.mensaje, '');
+          }
+        });
+
+      } else if(this.modo === this.modoEdicion.edicion) {
+        this.adminService.actualizarUsuario(usuarioModificado).subscribe({
+          next: (respuesta) => {
+            this.toastr.success(respuesta.mensaje, '');
+            this.router.navigate(['/admin/usuarios']);
+          },
+          error: (error) => {
+            this.toastr.error(error.error.mensaje, '');
+          }
+        });
+      }
+
 
       //console.log(JSON.stringify(usuarioModificado));
 
-      this.adminService.actualizarUsuario(usuarioModificado).subscribe({
-        next: (respuesta) => {
-          this.toastr.success(respuesta.mensaje, '');
-          this.router.navigate(['/admin/usuarios']);
-        },
-        error: (error) => {
-          this.toastr.error(error.error.mensaje, '');
-        }
-      })
+      
     }
   }
 
@@ -260,9 +282,15 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
    * @returns Intensidad de la preferencia
    */
   buscarIntensidad(array: any, descripcion: string): number {
-    return array.find((obj: Preferencias) => {
-      return obj.descripcion == descripcion
-    }).intensidad;
+    let intensidad = 0;
+    try {
+      intensidad = array.find((obj: Preferencias) => {
+        return obj.descripcion == descripcion
+      }).intensidad;
+    } catch (error) {
+      intensidad = 0;
+    }
+    return intensidad;
   }
 
   /**
@@ -290,10 +318,10 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
     let politica = new Preferencias(5, this.tipoPreferencias.politica, this.formUsuario.value.politica);
     //Hijos
     let hijos = new Preferencias(6, this.tipoPreferencias.hijos, this.formUsuario.value.hijos);
+    //Edad minima
+    let edadMinima = new Preferencias(7, this.tipoPreferencias.edadMin, this.formUsuario.value.edadMinima);
     //Edad máxima
-    let edadMaxima = new Preferencias(7, this.tipoPreferencias.edadMax, this.formUsuario.value.edadMaxima);
-    //Hijos
-    let edadMinima = new Preferencias(8, this.tipoPreferencias.edadMax, this.formUsuario.value.edadMinima);
+    let edadMaxima = new Preferencias(8, this.tipoPreferencias.edadMax, this.formUsuario.value.edadMaxima);
 
     let arrayPreferencias = [relacion, deportes, arte, cultura, politica, hijos, edadMaxima, edadMinima];
 

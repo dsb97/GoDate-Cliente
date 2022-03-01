@@ -58,7 +58,19 @@ export class AdminServiceService {
         return resp;
       })
     );
+  }
 
+  public nuevoUsuario(usuario: Usuario) {
+    let url = this.baseURL + this.urlAltaUsuario;
 
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    
+    return this.http.post<any>(url, usuario, { headers: headers }).pipe(
+      map((resp: any) => {
+        return resp;
+      })
+    );
   }
 }

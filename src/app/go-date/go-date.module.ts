@@ -7,6 +7,7 @@ import { ListadoGenteAfinComponent } from './components/listado-gente-afin/lista
 import { ListadoAmigosComponent } from './components/listado-amigos/listado-amigos.component';
 import { ListadoGenteCercaComponent } from './components/listado-gente-cerca/listado-gente-cerca.component';
 import { ListadoLesGustoComponent } from './components/listado-les-gusto/listado-les-gusto.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -19,7 +20,9 @@ import { ListadoLesGustoComponent } from './components/listado-les-gusto/listado
   ],
   imports: [
     SharedModule,
-    GoDateRoutingModule
+    GoDateRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
   ]
 })
 export class GoDateModule { }

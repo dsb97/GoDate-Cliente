@@ -1,4 +1,7 @@
 export enum ModoEdicion {
-    edicion = 1,
-    creacion = 2,
+    edicionAdmin = 1,
+    creacionAdmin = 2,
+    perfilEditar = 3,
+    perfilVer = 4,
+    creacionFuera = 5
   }

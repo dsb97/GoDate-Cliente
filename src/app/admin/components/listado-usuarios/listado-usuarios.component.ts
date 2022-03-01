@@ -79,11 +79,11 @@ export class ListadoUsuariosComponent implements OnInit {
   }
 
   editar(id_usuario: number): void {
-    this.router.navigate(['/admin/editar'], { queryParams: { id: id_usuario, modo: this.modoEdicion.edicion } });
+    this.router.navigate(['/admin/editar'], { queryParams: { id: id_usuario, modo: this.modoEdicion.edicionAdmin } });
   }
 
   nuevoUsuario(): void {
-    this.router.navigate(['/admin/nuevo'], { queryParams: { modo: this.modoEdicion.creacion } });
+    this.router.navigate(['/admin/nuevo'], { queryParams: { modo: this.modoEdicion.creacionAdmin } });
   }
 
 

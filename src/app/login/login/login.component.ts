@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { User } from '../model/user';
 import { LoginServiceService } from '../services/login-service.service';
 import { ToastrService } from 'ngx-toastr';
+import { ModoEdicion } from 'src/app/admin/models/modo';
 
 @Component({
   selector: 'app-login',
@@ -20,13 +21,15 @@ export class LoginComponent implements OnInit {
     "Administrador" : 1,
     "Usuario" :  2
   }
+  public modosEdicion : typeof ModoEdicion = ModoEdicion;
 
 
   constructor(private formBuilder: FormBuilder,
     private restUserService: LoginServiceService,
+    private router: Router,
     private toastr: ToastrService) {
     try {
-      if (JSON.parse(window.sessionStorage.getItem("user") || '{}').id) {
+      if (this.restUserService.getLoggedUser().id) {
         window.location.href = '/home';
       }
     } catch (error) {
@@ -73,21 +76,21 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
     if (this.login.invalid) return;
 
-    // this.user = new User(-1, '', '', '', '', []);
-
-
     this.restUserService.login(this.login.value.email, this.login.value.password).subscribe({
       next: (user) => {
         if (user) {
           window.location.href = '/home';
-          window.sessionStorage.setItem('user', JSON.stringify(user));
+          this.restUserService.setLoggedUser(user);
         }
-
       },
       error: e => {
         this.toastr.error(e.error.mensaje ? e.error.mensaje : 'El usuario no existe en el sistema', 'Error');
       }
     })
+  }
+
+  registro() {
+    this.router.navigate(['/alta'], {queryParams: {modo: this.modosEdicion.creacionFuera}});
   }
 
 }

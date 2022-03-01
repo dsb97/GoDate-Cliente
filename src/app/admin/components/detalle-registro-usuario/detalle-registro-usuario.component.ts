@@ -7,6 +7,8 @@ import { ModoEdicion } from '../../models/modo';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TipoPreferencias } from '../../models/tipoPreferencias';
 import { ToastrService } from 'ngx-toastr';
+import { LoginServiceService } from 'src/app/login/services/login-service.service';
+import { User } from 'src/app/login/model/user';
 
 
 @Component({
@@ -42,6 +44,7 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
 
   constructor(
     private adminService: AdminServiceService,
+    private loginService: LoginServiceService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private router: Router,
@@ -52,7 +55,7 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       apellidos: ['', [Validators.required, Validators.minLength(3)]],
       correo: ['', [Validators.required, Validators.email]],
-      pass: ['', this.modo === this.modoEdicion.creacion ? [Validators.required] : []],
+      pass: ['', this.modo === this.modoEdicion.creacionAdmin ? [Validators.required] : []],
       genero: ['', [Validators.required]],
       fecha_nacimiento: ['', [Validators.required]],
       ciudad: ['', [Validators.required]],
@@ -71,7 +74,7 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
       politica: ['', Validators.required],
       hijos: [''],
       //----------------ADMINISTRACIÓN----------------
-      roles: this.formBuilder.array([], [Validators.required]),
+      roles: this.formBuilder.array([], (this.modo === (this.modoEdicion.edicionAdmin || this.modoEdicion.creacionAdmin) ? [Validators.required] : [])),
       activo: ['']
     });
   }
@@ -80,20 +83,46 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
 
     await this.route.queryParams.subscribe(params => {
       this.modo = parseInt(params['modo'] + '');
-      if (this.modo === this.modoEdicion.creacion) {
-        this.idUsuario = 0;
-        this.usuario = new Usuario(0, '', '', 'https://picsum.photos/350', 0, 0);
-        this.rellenarFormulario();
-        this.tituloPantalla = 'Nuevo usuario';
-      } else if (this.modo === this.modoEdicion.edicion) {
-        this.idUsuario = parseInt(params['id'] + '');
-        this.adminService.detalleUsuario(this.idUsuario).subscribe({
-          next: (res) => {
-            this.usuario = res;
-            this.rellenarFormulario();
-          }
-        });
-        this.tituloPantalla = 'Editar usuario';
+      switch (this.modo) {
+        case this.modoEdicion.creacionAdmin:
+          this.idUsuario = 0;
+          this.usuario = new Usuario(0, '', '', 'https://picsum.photos/350', 0, 0);
+          this.rellenarFormulario();
+          this.tituloPantalla = 'Nuevo usuario';
+          break;
+
+        case this.modoEdicion.edicionAdmin:
+          this.idUsuario = parseInt(params['id'] + '');
+          this.adminService.detalleUsuario(this.idUsuario).subscribe({
+            next: (res) => {
+              this.usuario = res;
+              this.rellenarFormulario();
+            }
+          });
+          this.tituloPantalla = 'Editar usuario';
+          break;
+
+        case this.modoEdicion.perfilEditar:
+          this.idUsuario = parseInt(params['id'] + '');
+          this.adminService.detalleUsuario(this.idUsuario).subscribe({
+            next: (res) => {
+              this.usuario = res;
+              this.tituloPantalla = `Perfil de ${this.usuario.nombre}`;
+              this.rellenarFormulario();
+            }
+          });
+          break;
+
+        case this.modoEdicion.creacionFuera:
+          this.idUsuario = 0;
+          this.usuario = new Usuario(0, '', '', '././assets/images/DefaultUser.png', 0, 0);
+          this.usuario.roles = [2];
+          this.rellenarFormulario();
+          this.tituloPantalla = '¡Bienvenido a GoDate!';
+          break;
+
+        default:
+          break;
       }
 
 
@@ -232,43 +261,80 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
     } else {
       let usuarioModificado = this.generarUsuario();
 
-      if(this.modo === this.modoEdicion.creacion) {
+      switch (this.modo) {
+        case this.modoEdicion.creacionAdmin:
+          this.adminService.nuevoUsuario(usuarioModificado).subscribe({
+            next: (respuesta) => {
+              this.toastr.success(respuesta.mensaje, '');
+              this.router.navigate(['/admin/usuarios']);
+            },
+            error: (error) => {
+              this.toastr.error(error.error.mensaje, '');
+            }
+          });
+          break;
 
-        this.adminService.nuevoUsuario(usuarioModificado).subscribe({
-          next: (respuesta) => {
-            this.toastr.success(respuesta.mensaje, '');
-            this.router.navigate(['/admin/usuarios']);
-          },
-          error: (error) => {
-            this.toastr.error(error.error.mensaje, '');
-          }
-        });
+        case this.modoEdicion.edicionAdmin:
+          this.adminService.actualizarUsuario(usuarioModificado).subscribe({
+            next: (respuesta) => {
+              this.toastr.success(respuesta.mensaje, '');
+              this.router.navigate(['/admin/usuarios']);
+            },
+            error: (error) => {
+              this.toastr.error(error.error.mensaje, '');
+            }
+          });
+          break;
 
-      } else if(this.modo === this.modoEdicion.edicion) {
-        this.adminService.actualizarUsuario(usuarioModificado).subscribe({
-          next: (respuesta) => {
-            this.toastr.success(respuesta.mensaje, '');
-            this.router.navigate(['/admin/usuarios']);
-          },
-          error: (error) => {
-            this.toastr.error(error.error.mensaje, '');
-          }
-        });
+        case this.modoEdicion.perfilEditar:
+          this.adminService.actualizarUsuario(usuarioModificado).subscribe({
+            next: (respuesta) => {
+              this.toastr.success(respuesta.mensaje, '');
+              this.router.navigate(['/home']);
+              let logedUser = new User(
+                usuarioModificado.id,
+                usuarioModificado.correo!,
+                usuarioModificado.nombre,
+                usuarioModificado.apellidos,
+                usuarioModificado.foto,
+                usuarioModificado.roles!);
+              this.loginService.setLoggedUser(logedUser);
+            },
+            error: (error) => {
+              this.toastr.error(error.error.mensaje, '');
+            }
+          });
+          break;
+
+        case this.modoEdicion.creacionFuera:
+          this.adminService.nuevoUsuario(usuarioModificado).subscribe({
+            next: (respuesta) => {
+              this.toastr.success(respuesta.mensaje, '');
+              this.router.navigate(['']);
+            },
+            error: (error) => {
+              this.toastr.error(error.error.mensaje, '');
+            }
+          });
+          break;
+        default:
+          break;
       }
-
-
-      //console.log(JSON.stringify(usuarioModificado));
-
-      
     }
   }
 
-  onReset() {
-    this.router.navigate(['/admin/usuarios']);
-  }
-
   volver() {
-    this.router.navigate(['/admin/usuarios']);
+    switch (this.modo) {
+      case this.modoEdicion.creacionFuera:
+        this.router.navigate(['']);
+        break;
+      case this.modoEdicion.edicionAdmin:
+        this.router.navigate(['/admin/usuarios']);
+        break;
+      case this.modoEdicion.perfilEditar:
+        this.router.navigate(['/home']);
+        break;
+    }
   }
 
   get formulario() {

@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { User } from 'src/app/login/model/user';
 import { RestUserServicio } from 'src/app/go-date/services/rest-user.service';
 import { ToastrService } from 'ngx-toastr';
+import { ModoEdicion } from 'src/app/admin/models/modo';
+import { LoginServiceService } from 'src/app/login/services/login-service.service';
 
 @Component({
   selector: 'app-navbar',
@@ -17,19 +19,26 @@ export class NavbarComponent implements OnInit {
     "Administrador" : 1,
     "Usuario" :  2
   }
-  public user: User = JSON.parse(window.sessionStorage.getItem('user') || '{}');
+  public user!: User;
+  public modoEdicion: typeof ModoEdicion = ModoEdicion;
 
 
   constructor
   (
+    private router: Router,
     private restUserServicio: RestUserServicio,
+    private loginService: LoginServiceService,
     private toastr: ToastrService
   ) {
     this.imgLogo = "./assets/images/LogoIzq.png";
   }
 
   ngOnInit(): void {
+    this.user = this.loginService.getLoggedUser();
+  }
 
+  perfil() {
+    this.router.navigate(['/home/perfil'], {queryParams: { id: this.user.id, modo: this.modoEdicion.perfilEditar }});
   }
 
   cerrarSesion() {

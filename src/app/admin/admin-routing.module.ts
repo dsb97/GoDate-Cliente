@@ -5,6 +5,10 @@ import { ListadoUsuariosComponent } from './components/listado-usuarios/listado-
 
 const routes: Routes = [
   {
+    path: '',
+    component: DetalleRegistroUsuarioComponent
+  },
+  {
     path: 'usuarios',
     component: ListadoUsuariosComponent
   },
@@ -15,7 +19,7 @@ const routes: Routes = [
   {
     path: 'nuevo',
     component: DetalleRegistroUsuarioComponent
-  },
+  }
 ];
 
 @NgModule({

@@ -13,7 +13,6 @@ import { ModoEdicion } from 'src/app/admin/models/modo';
 })
 export class LoginComponent implements OnInit {
 
-  public clase: string;
   login: FormGroup;
   submitted: boolean = false;
   // user?: User;
@@ -36,35 +35,16 @@ export class LoginComponent implements OnInit {
       
     }
 
-    this.clase = '';
-
     this.login = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.pattern]],
+      password: ['', [Validators.required, Validators.pattern('(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}')]],
     });
   }
 
   ngOnInit(): void {
-    this.cargarInicio();
   }
 
-  cargarInicio() {
-    let r = Math.round(Math.random() * (3 - 1) + 1);
-    switch (r) {
-      case 1:
-        this.clase = 'hetero';
-        break;
-      case 2:
-        this.clase = 'gay';
-        break;
-      case 3:
-        this.clase = 'lesbiana';
-        break;
-      default:
-        this.clase = 'gay';
-        break;
-    }
-  }
+
 
   //Devuelve los controles del formulario (esto se usa en el html)
   get formulario() {
@@ -79,12 +59,16 @@ export class LoginComponent implements OnInit {
     this.restUserService.login(this.login.value.email, this.login.value.password).subscribe({
       next: (user) => {
         if (user) {
-          window.location.href = '/home';
+          if(user.roles.includes(2)){
+            window.location.href = '/home';
+          } else {
+          window.location.href = '/admin/usuarios';
+          }
           this.restUserService.setLoggedUser(user);
         }
       },
       error: e => {
-        this.toastr.error(e.error.mensaje ? e.error.mensaje : 'El usuario no existe en el sistema', 'Error');
+        this.toastr.error(e.error.mensaje ? e.error.mensaje : 'Error desconocido', 'Error');
       }
     })
   }

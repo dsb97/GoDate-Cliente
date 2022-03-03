@@ -27,38 +27,59 @@
         </div>
         <div class="row">
             <div class="col">
-                <label for="nombre" class="form-label">Nombre</label>
+                <label for="nombre" class="form-label required">Nombre</label>
                 <input formControlName="nombre" id="nombre" type="text" class="form-control" placeholder="Nombre"
                     aria-label="Nombre">
+                <span *ngIf="this.submitted && formulario['nombre'].invalid" class="error">Este campo es
+                    obligatorio</span>
             </div>
             <div class="col">
-                <label for="apellidos" class="form-label">Apellidos</label>
+                <label for="apellidos" class="form-label required">Apellidos</label>
                 <input formControlName="apellidos" id="apellidos" type="text" class="form-control"
                     placeholder="Apellidos" aria-label="Apellidos">
+                <span *ngIf="this.submitted && formulario['apellidos'].invalid" class="error">Este campo es
+                    obligatorio</span>
             </div>
         </div>
         <div class="row pt-3">
             <div class="col">
-                <label for="correo" class="form-label">Correo</label>
+                <label for="correo" class="form-label required">Correo</label>
                 <input formControlName="correo" id="correo" type="text" class="form-control" placeholder="Correo"
                     aria-label="Correo">
+                    
             </div>
             <div class="col">
-                <label for="pass" class="form-label">Contraseña</label>
+                <label for="pass" class="form-label required">Contraseña</label>
                 <input formControlName="pass" id="pass" type="password" class="form-control" placeholder="Contraseña"
                     aria-label="Contraseña">
+                    <div class="error" *ngIf="submitted && formulario['pass'].errors">
+                        <div *ngIf="formulario['pass'].errors['required']">Este campo es obligatorio</div>
+                        <div *ngIf="formulario['pass'].errors['pattern']">Debe tener al menos un dígito, una minúscula, una mayúscula y tener como mínimo 8 caracteres</div>
+                    </div>
             </div>
         </div>
         <div class="row pt-3">
             <div class="col">
-                <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento</label>
+                <label for="fecha_nacimiento" class="form-label required">Fecha de nacimiento</label>
                 <input formControlName="fecha_nacimiento" id="fecha_nacimiento" type="date" class="form-control"
                     placeholder="Fecha de nacimiento" aria-label="Fecha de nacimiento">
+                <span class="error" *ngIf="this.submitted && formulario['fecha_nacimiento'].invalid ">Este campo es
+                    obligatorio</span>
+                <span class="error"
+                    *ngIf="this.submitted && (this.getFechaSeleccionada(formulario['fecha_nacimiento'].value) > this.fechaMin)">Solo
+                    se
+                    permite el registro de mayores de edad.</span>
+
             </div>
             <div class="col">
-                <label for="ciudad" class="form-label">Ciudad de residencia</label>
-                <input formControlName="ciudad" id="ciudad" type="text" class="form-control" placeholder="Ciudad"
-                    aria-label="Ciudad">
+                <label for="ciudad" class="form-label required">Ciudad de residencia</label>
+                <input formControlName="ciudad" id="ciudad" class="form-control" list="ciudades" id="exampleDataList"
+                    placeholder="Escribe para buscar...">
+                <datalist id="ciudades">
+                    <option *ngFor="let item of ciudades" [value]="item">
+                </datalist>
+                <span *ngIf="this.submitted && formulario['ciudad'].invalid" class="error">Este campo es
+                    obligatorio</span>
             </div>
         </div>
 
@@ -69,29 +90,30 @@
         </div>
         <div class="row pt-3">
             <div class="col">
-                <label for="descripcion" class="form-label">Descripción</label>
+                <label for="descripcion" class="form-label required">Descripción</label>
                 <textarea formControlName="descripcion" id="descripcion" class="form-control" rows="3"
-                    placeholder="Descríbete en algunas palabras para que los demás puedan conocerte mejor"></textarea>
+                    placeholder="Defínete en algunas palabras para que los demás puedan conocerte mejor"></textarea>
+                <span *ngIf="this.submitted && formulario['descripcion'].invalid" class="error">Este campo es
+                    obligatorio</span>
             </div>
         </div>
         <div class="row pt-3">
             <div class="col">
-                <label for="hijos" class="form-label">Número de hijos</label>
-                <input formControlName="numHijos" id="hijos" type="number" class="form-control" value="0" min="0"
+                <label for="numHijos" class="form-label">Número de hijos</label>
+                <input formControlName="numHijos" id="numHijos" type="number" class="form-control" value="0" min="0"
                     max="100">
             </div>
             <div class="col">
-                <label for="genero" class="form-label">Género</label>
+                <label for="genero" class="form-label required">Género</label>
                 <select class="form-select" (change)="cambiarGenero($event)" formControlName="genero">
-                    <option value="-1" hidden>Seleccione uno...</option>
                     <option *ngFor="let g of gustosGenero" [value]="g.id">
                         {{ g.descripcion }}
                     </option>
                 </select>
                 <!-- error block -->
-                <div class="invalid-feedback" *ngIf="submitted && formulario['genero'].invalid">
-                    <sup>*</sup>Por favor, seleccione uno
-                </div>
+                <span class="error" *ngIf="submitted && formulario['genero'].invalid">
+                    Este campo es obligatorio
+                </span>
             </div>
         </div>
         <div class="row">
@@ -102,7 +124,7 @@
         </div>
         <div class="row pt-3">
             <div class="col pe-4">
-                <label for="gustosGenero" class="form-label">Género</label>
+                <label for="gustosGenero" class="form-label required">Género</label>
                 <div class="w-100 d-flex justify-content-between form-check">
                     <ng-container *ngFor="let genero of this.gustosGenero">
                         <label for="genero{{genero.descripcion.replace(' ', '_')}}" class="form-check-label">
@@ -113,34 +135,42 @@
                             {{genero.descripcion}}
                         </label>
                     </ng-container>
-
                 </div>
-                <!-- <p class="error" *ngIf="this.formUsuario.controls['gustosGenero'].errors?.['required']">
-                    Por favor, selecciona al menos algún género.
-                  </p> -->
+                <span class="error" *ngIf="submitted && formulario['gustosGenero'].invalid">Este campo es
+                    obligatorio</span>
             </div>
             <div class="col-3">
-                <label for="edadMinima" class="form-label">Edad mínima</label>
-                <input formControlName="edadMinima" type="number" id="edadMinima" class="form-control" name="">
+                <label for="edadMinima" class="form-label required">Edad mínima</label>
+                <input formControlName="edadMinima" type="number" id="edadMinima" class="form-control" name=""
+                    [min]="18">
+                <span class="error" *ngIf="submitted && formulario['edadMinima'].invalid">
+                    <span *ngIf="this.formulario['edadMinima'].errors!['required']">
+                        Este campo es obligatorio
+                    </span>
+                    <span *ngIf="this.formulario['edadMinima'].errors!['min'].min">
+                        En esta aplicación sólo puede haber mayores de edad
+                    </span>
+                </span>
+
             </div>
             <div class="col-3">
-                <label for="edadMaxima" class="form-label">Edad máxima</label>
+                <label for="edadMaxima" class="form-label required">Edad máxima</label>
                 <input formControlName="edadMaxima" type="number" id="edadMaxima" class="form-control" name="">
+                <span class="error"
+                    *ngIf="submitted && formulario['edadMaxima'].value < formulario['edadMinima'].value">Asegúrese de
+                    que la edad máxima es mayor que la mínima</span>
             </div>
         </div>
         <div class="row pt-3">
             <div class="col">
-                <label for="relacion" class="form-label">Relación</label>
+                <label for="relacion" class="form-label required">Relación</label>
                 <select class="form-select" (change)="cambiarRelacion($event)" formControlName="relacion">
-                    <option value="-1" hidden>Seleccione uno...</option>
                     <option *ngFor="let tr of tipoRelacion" [value]="tr.intensidad">
                         {{ tr.descripcion }}
                     </option>
                 </select>
-                <!-- error block -->
-                <div class="invalid-feedback" *ngIf="submitted && formulario['relacion'].invalid">
-                    <sup>*</sup>Por favor, seleccione uno
-                </div>
+                <span class="error" *ngIf="submitted && formulario['gustosGenero'].invalid">Este campo es
+                    obligatorio</span>
             </div>
             <div class="col">
                 <label for="sinohijos">Hijos</label>
@@ -235,7 +265,7 @@
             </div>
         </ng-container>
 
-        <div class="row pt-3">
+        <div class="row py-3">
             <div class="col d-flex justify-content-end">
                 <input class="btn btn-secondary me-3" type="reset" value="Cancelar" (click)="volver()" />
                 <input class="btn btn-primary text-white" type="submit" value="Guardar cambios" />

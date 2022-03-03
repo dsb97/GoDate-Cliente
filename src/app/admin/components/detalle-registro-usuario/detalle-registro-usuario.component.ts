@@ -18,6 +18,8 @@ import { User } from 'src/app/login/model/user';
 })
 export class DetalleRegistroUsuarioComponent implements OnInit {
 
+  public ciudades: string[] = [];
+  public fechaMin: Date = new Date();
   public tituloPantalla = '';
   public idUsuario: number = 0;
   public modo?: number;
@@ -37,7 +39,7 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
   ]
 
   public tipoRelacion: Array<{ intensidad: number, descripcion: string }> = [
-    { intensidad: 0, descripcion: 'Cerrada' },
+    { intensidad: 1, descripcion: 'Cerrada, exclusiva' },
     { intensidad: 50, descripcion: 'Abierta' },
     { intensidad: 100, descripcion: 'Poliamorosa' },
   ]
@@ -50,24 +52,26 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
   ) {
+    this.fechaMin.setMonth(this.fechaMin.getMonth() - (12 * 18));
+
     this.formUsuario = this.formBuilder.group({
       //----------------USUARIO----------------
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       apellidos: ['', [Validators.required, Validators.minLength(3)]],
       correo: ['', [Validators.required, Validators.email]],
-      pass: ['', this.modo === this.modoEdicion.creacionAdmin ? [Validators.required] : []],
+      pass: ['', []],
       genero: ['', [Validators.required]],
       fecha_nacimiento: ['', [Validators.required]],
       ciudad: ['', [Validators.required]],
       descripcion: ['', [Validators.required]],
       //IMPLEMENTAR EL LUNES
       foto: ['', [Validators.required]],
-      numHijos: ['', [Validators.required]],
+      numHijos: [0, [Validators.required]],
       gustosGenero: this.formBuilder.array([], [Validators.required]),
       //----------------PREFERENCIAS----------------
       relacion: ['', Validators.required],
-      edadMaxima: ['', Validators.required],
-      edadMinima: ['', Validators.required],
+      edadMaxima: ['', [Validators.required]],
+      edadMinima: ['', [Validators.min(18), Validators.required]],
       deportes: ['', Validators.required],
       arte: ['', Validators.required],
       cultura: ['', Validators.required],
@@ -81,14 +85,21 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
 
-    await this.route.queryParams.subscribe(params => {
+
+    this.route.queryParams.subscribe(params => {
       this.modo = parseInt(params['modo'] + '');
       switch (this.modo) {
         case this.modoEdicion.creacionAdmin:
           this.idUsuario = 0;
           this.usuario = new Usuario(0, '', '', 'https://picsum.photos/350', 0, 0);
+          this.usuario.hijos = 0;
+          this.usuario.preferencias = [];
+          this.usuario.preferencias.push(new Preferencias(7, 'Edad mínima', 18));
+          this.usuario.preferencias.push(new Preferencias(8, 'Edad máxima', 99));
           this.rellenarFormulario();
           this.tituloPantalla = 'Nuevo usuario';
+          this.formulario['pass'].addValidators(Validators.required);
+          this.formulario['pass'].addValidators(Validators.pattern('(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}'));
           break;
 
         case this.modoEdicion.edicionAdmin:
@@ -117,8 +128,14 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
           this.idUsuario = 0;
           this.usuario = new Usuario(0, '', '', '././assets/images/DefaultUser.png', 0, 0);
           this.usuario.roles = [2];
+          this.usuario.hijos = 0;
+          this.usuario.preferencias = [];
+          this.usuario.preferencias.push(new Preferencias(7, this.tipoPreferencias.edadMin, 18));
+          this.usuario.preferencias.push(new Preferencias(8, this.tipoPreferencias.edadMax, 99));
           this.rellenarFormulario();
-          this.tituloPantalla = '¡Bienvenido a GoDate!';
+          this.tituloPantalla = 'Da el paso y únete a nuestra comunidad';
+          this.formulario['pass'].addValidators(Validators.required);
+          this.formulario['pass'].addValidators(Validators.pattern(new RegExp('(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}')));
           break;
 
         default:
@@ -127,6 +144,10 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
 
 
     });
+
+    this.listaCiudades();
+
+    this.formulario['edadMaxima'].addValidators(Validators.min(this.formulario['edadMinima'].value));
   }
 
 
@@ -248,16 +269,19 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     if (this.formUsuario.invalid) {
-      //Comprobación de por qué no se envió el formulario
-      const invalid = [];
-      const controls = this.formUsuario.controls;
-      for (const name in controls) {
-        if (controls[name].invalid) {
-          invalid.push(name);
-        }
-      }
-      console.log(invalid);
+      //   //Comprobación de por qué no se envió el formulario
+      //   const invalid = [];
+      //   const controls = this.formUsuario.controls;
+      //   for (const name in controls) {
+      //     if (controls[name].invalid) {
+      //       invalid.push(name);
+      //     }
+      //   }
 
+      //   console.log(invalid);
+
+      //   console.log(this.formulario['edadMinima'].errors!['required']);
+      //   // console.log();
     } else {
       let usuarioModificado = this.generarUsuario();
 
@@ -290,7 +314,7 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
           this.adminService.actualizarUsuario(usuarioModificado).subscribe({
             next: (respuesta) => {
               this.toastr.success(respuesta.mensaje, '');
-              this.router.navigate(['/home']);
+
               let logedUser = new User(
                 usuarioModificado.id,
                 usuarioModificado.correo!,
@@ -299,6 +323,11 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
                 usuarioModificado.foto,
                 usuarioModificado.roles!);
               this.loginService.setLoggedUser(logedUser);
+              if (logedUser.roles.includes(1)) {
+                this.router.navigate(['/admin/usuarios']);
+              } else {
+                this.router.navigate(['/home']);
+              }
             },
             error: (error) => {
               this.toastr.error(error.error.mensaje, '');
@@ -339,6 +368,17 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
 
   get formulario() {
     return this.formUsuario.controls;
+  }
+
+  async listaCiudades() {
+    this.adminService.listaCiudades().subscribe({
+      next: (resp) => {
+        this.ciudades = resp;
+      },
+      error: (error) => {
+        this.ciudades = [];
+      }
+    });
   }
 
   /**
@@ -420,5 +460,15 @@ export class DetalleRegistroUsuarioComponent implements OnInit {
       arrayRoles,
     );
 
+  }
+
+
+  getFechaSeleccionada(fecha: string): Date {
+    if (fecha != undefined && fecha != null && fecha != '') {
+      let array: string[] = fecha.split('-');
+      return new Date(parseInt(array[0]), parseInt(array[1]) + 1, parseInt(array[2]));
+    } else {
+      return new Date(1970, 1, 1);
+    }
   }
 }

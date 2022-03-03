@@ -73,4 +73,14 @@ export class AdminServiceService {
       })
     );
   }
+
+  public listaCiudades() {
+    let url = 'http://127.0.0.1:8000/api/listaCiudades'
+
+    return this.http.get<string[]>(url).pipe(
+      map((resp: string[]) => {
+        return resp;
+      })
+    );
+  }
 }

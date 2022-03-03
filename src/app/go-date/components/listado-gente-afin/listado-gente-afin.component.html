@@ -1,10 +1,10 @@
 <div class="row p-4">
-    <div *ngIf="listaAfines.length > 0" class="card col-12">
+    <div *ngIf="listaAfines.length > 0; else nono" class="card col-12">
         <div class="row g-0">
             <div class="col-6">
                 <div class="row">
                     <div class="col-12">
-                        <img src="{{listaAfines[0].foto}}" class="img-fluid rounded-start">
+                        <img src="{{this.listaAfines[0].foto}}" class="img-fluid rounded-start">
                     </div>
                 </div>
                 <div class="row">
@@ -23,28 +23,34 @@
             <div class="col-6">
                 <div class="card-body">
                     <span class="d-flex">
-                        <i class="bi bi-circle-fill me-3 align-self-center {{listaAfines[0].iconoConectado}}"></i>
-                        <h2 class="card-title align-self-center">{{listaAfines[0].nombre}} {{listaAfines[0].apellidos}},
-                            {{listaAfines[0].edad}}</h2>
+                        <i class="bi bi-circle-fill me-3 align-self-center {{this.listaAfines[0].iconoConectado}}"></i>
+                        <h2 class="card-title align-self-center">{{this.listaAfines[0].nombre}} {{listaAfines[0].apellidos}},
+                            {{this.listaAfines[0].edad}}</h2>
                     </span>
                     <p class="card-text">
                         <i class="bi bi-pin-map-fill me-3"></i>
-                        {{listaAfines[0].ciudad}}
+                        {{this.listaAfines[0].ciudad}}
                     </p>
                     <p class="card-text">
-                        <i class="bi bi-{{listaAfines[0].iconoGenero}} me-3"></i>
-                        {{listaAfines[0].genero}}
+                        <i class="bi bi-{{this.listaAfines[0].iconoGenero}} me-3"></i>
+                        {{this.listaAfines[0].genero}}
                     </p>
                     <p class="card-text">
                         <i class="bi bi-person-square me-3"></i>
-                        {{listaAfines[0].hijos}} hijos
+                        {{this.listaAfines[0].hijos}} hijos
                     </p>
-                    <h6 class="card-text">{{listaAfines[0].descripcion}}</h6>
+                    <h6 class="card-text">{{this.listaAfines[0].descripcion}}</h6>
 
-                    <p class="card-text"><small class="text-muted">Tienes un {{listaAfines[0].porcentaje}}% de afinidad
-                            con {{listaAfines[0].nombre}}</small></p>
+                    <p class="card-text"><small class="text-muted">Tienes un {{this.listaAfines[0].porcentaje}}% de afinidad
+                            con {{this.listaAfines[0].nombre}}</small></p>
                 </div>
             </div>
         </div>
     </div>
+    <ng-template #nono>
+        <div class="col-12">
+            <h1 class="h3 p-5">No podemos mostrarte a nadie más, ¿por qué no vuelves en otro momento?</h1>
+        </div>
+    </ng-template>
+    
 </div>

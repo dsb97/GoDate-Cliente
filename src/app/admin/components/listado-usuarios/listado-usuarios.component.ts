@@ -86,6 +86,17 @@ export class ListadoUsuariosComponent implements OnInit {
     this.router.navigate(['/admin/nuevo'], { queryParams: { modo: this.modoEdicion.creacionAdmin } });
   }
 
+  activarToggle(id_usuario: number) : void {
+    this.adminService.activarToggle(id_usuario).subscribe({
+      next: (resp) => {
+        this.toastr.success(resp.mensaje, 'Éxito');
+      },
+      error: (error) => {
+        this.toastr.error('Error al activar al usuario', 'Error');
+      }
+    })
+  }
+
 
 
 

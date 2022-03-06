@@ -27,6 +27,10 @@ const routes: Routes = [
   {
     path: 'listaGenteCerca',
     component: ListadoGenteCercaComponent
+  },
+  {
+    path: 'perfilUsuario',
+    component: DetalleRegistroUsuarioComponent
   }
 ];
 

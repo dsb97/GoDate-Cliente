@@ -38,12 +38,10 @@ export class ListadoGenteAfinComponent implements OnInit {
 
     this.restService.darLike(id_o, id_d).subscribe({
       next: (match) => {
-        console.log('Recibe respuesta: ' + match);
         if(match == "true") {
           this.toastr.success('Tuviste una conexión con ' + this.listaAfines[0].nombre + '. Puedes ver el resto de conexiones en la pestaña Amigos', '¡Match!');
         }
 
-        //debugger;
         this.listaAfines = this.listaAfines.slice(1, this.listaAfines.length);
 
         if(this.listaAfines.length == 0) {

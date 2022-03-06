@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ModoEdicion } from 'src/app/admin/models/modo';
 import { User } from 'src/app/login/model/user';
 import { PerfilTarjeta } from '../../models/PerfilTarjeta';
 import { RestUserServicio } from '../../services/rest-user.service';
@@ -12,9 +14,11 @@ export class ListadoGenteCercaComponent implements OnInit {
   
   public listaGenteCerca: PerfilTarjeta[] = [];
   public user: User = JSON.parse(window.sessionStorage.getItem("user") || '{}');
+  public modo : typeof ModoEdicion = ModoEdicion;
 
   constructor(
-    private restService: RestUserServicio
+    private restService: RestUserServicio,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -26,6 +30,10 @@ export class ListadoGenteCercaComponent implements OnInit {
       (response) => {
         this.listaGenteCerca = response;
     });
+  }
+
+  public irAPerfil(id_usuario: number) {
+    this.router.navigate(['/home/perfilUsuario'], { queryParams: { id: id_usuario, modo: this.modo.perfilVer } });
   }
 }
 

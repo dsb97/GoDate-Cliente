@@ -16,5 +16,6 @@ export interface usuarioResponse {
     hijos?: number,
     gustosGenero?: number[],
     preferencias?: Preferencias[]
-    roles?: number[]
+    roles?: number[],
+    file? : any
 }

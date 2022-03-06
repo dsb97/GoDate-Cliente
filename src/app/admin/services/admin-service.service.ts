@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Usuario } from '../models/usuario';
 import { usuarioResponse } from '../models/usuarioResponse';
 
@@ -15,6 +15,7 @@ export class AdminServiceService {
   public urlAltaUsuario: string = 'altaUsuario/';
   public urlActualizarUsuario: string = 'actualizarUsuario/';
   public urlBorrarUsuario: string = 'borrarUsuario/';
+  public urlToggleActivado: string = 'togleActivado/';
 
   constructor(private http: HttpClient) { }
 
@@ -52,7 +53,7 @@ export class AdminServiceService {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
-    
+
     return this.http.post<any>(url, usuario, { headers: headers }).pipe(
       map((resp: any) => {
         return resp;
@@ -66,7 +67,7 @@ export class AdminServiceService {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
-    
+
     return this.http.post<any>(url, usuario, { headers: headers }).pipe(
       map((resp: any) => {
         return resp;
@@ -82,5 +83,21 @@ export class AdminServiceService {
         return resp;
       })
     );
+  }
+
+  public activarToggle(id_usuario: number) {
+    let url = this.baseURL + this.urlToggleActivado + id_usuario;
+
+    return this.http.put<any>(url, {}).pipe(
+      map((resp: any) => {
+        return resp;
+      })
+    );
+  }
+
+  public subirFoto(formData: FormData){
+    let url = 'http://127.0.0.1:8000/api/subirFoto';
+
+    return this.http.post(url, formData)
   }
 }

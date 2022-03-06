@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Output, EventEmitter } from '@angular/core';
 import { map } from 'rxjs';
 import { UserResponse } from '../model/req-response';
 import { User } from '../model/user';
@@ -14,6 +14,9 @@ export class LoginServiceService {
 
   constructor(private http: HttpClient) { }
 
+  @Output() usuarioTrigger: EventEmitter<any> = new EventEmitter();
+
+
   public login(correo: string, pass: string) {
     let url = this.baseURL + 'login';
     let data = {
@@ -25,7 +28,9 @@ export class LoginServiceService {
     });
     return this.http.post<UserResponse>(url, data, { headers: headers }).pipe(
       map((resp: UserResponse) => {
-        return User.userFromJSON(resp)
+        let user = User.userFromJSON(resp);
+        this.usuarioTrigger.emit(user);
+        return user;
       })
     );
   }

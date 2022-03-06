@@ -26,11 +26,12 @@
                         <td><i class="bi bi-circle-fill me-3 {{usuario.conectado === 0 ? 'n' : ''}}online"></i></td>
 
                         <td>
-                            <input *ngIf="usuario.activo; else elseBlock" role="button" type="checkbox"
-                                class="form-check-input" checked>
-                            <ng-template #elseBlock>
+                            <input role="button" type="checkbox"
+                                (change)="activarToggle(usuario.id)"
+                                class="form-check-input" [checked] = "usuario.activo">
+                            <!-- <ng-template #elseBlock>
                                 <input role="button" type="checkbox" class="form-check-input">
-                            </ng-template>
+                            </ng-template> -->
 
                         </td>
                         <td>

@@ -1,7 +1,7 @@
 <div class="d-flex flex-column flex-shrink-0 p-3 bg-light estirar">
-  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-    <img class="img-fluid" src="{{imgLogo}}" alt="">
-  </a>
+  <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+    <img role="button" (click)="home()" class="img-fluid" src="{{imgLogo}}" alt="">
+  </div>
   <hr>
   <div class="dropdown">
     <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2"
@@ -41,7 +41,7 @@
           Gente cerca
         </a>
       </li>
-      <li>
+      <li hidden>
         <a routerLink="home/listaMensajes" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
           class="nav-link link-dark">
           <i class="bi bi-chat-dots-fill me-2" width="16" height="16"></i>

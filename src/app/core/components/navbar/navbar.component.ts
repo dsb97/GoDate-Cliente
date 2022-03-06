@@ -35,6 +35,11 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.loginService.getLoggedUser();
+    this.loginService.usuarioTrigger.subscribe({
+      next: (data: User) => {
+        this.user = data;
+      },
+    });
   }
 
   perfil() {
@@ -44,13 +49,22 @@ export class NavbarComponent implements OnInit {
   cerrarSesion() {
     this.restUserServicio.cerrarSesion(this.user.id).subscribe({
       next: () => {
-        window.sessionStorage.clear();
+        this.loginService.removeLoggedUser();
         window.location.href = '/';
       },
       error: e => {
         this.toastr.error('Se produjo un error al cerrar sesión', '¡Ups!');
       }
     });
+  }
+
+  home() {
+    if(this.router.url.includes('admin')) {
+      this.router.navigate(['/admin/usuarios']);
+    } else {
+      this.router.navigate(['/home']);
+
+    }
   }
 
 }

@@ -5,7 +5,9 @@
     </div>
 </div>
 <div class="container">
-    <form [formGroup]="this.formUsuario" (ngSubmit)="onSubmit()">
+    <!-- <ng-container *ngIf="this.modo == this.modoEdicion.perfilVer"></ng-container> -->
+    <form *ngIf="this.modo != this.modoEdicion.perfilVer; else perfilSoloLectura" [formGroup]="this.formUsuario"
+        (ngSubmit)="onSubmit()">
         <div class="row">
             <div class="col">
                 <h2 class="h4 mt-3 border-bottom">Foto de perfil</h2>
@@ -13,11 +15,13 @@
         </div>
         <div class="row">
             <div class="col">
+                <img role="button" (click)="this.abrirFoto(this.formulario['foto'].value)" class="rounded-circle"
+                    src="{{this.formulario['foto'].value}}" alt="" height="100" width="100">
                 <label for="file" role="button">
-                    <img class="rounded-circle" src="{{this.usuario.foto}}" alt="" height="100" width="100">
                     <a class="btn btn-primary ms-3 text-white">Elegir nueva imagen de perfil</a>
                 </label>
-                <input hidden role="button" type="file" name="" id="file">
+                <input hidden role="button" type="file" name="" id="file" accept="image/*"
+                    (change)="this.obtenerFoto($event)">
             </div>
         </div>
         <div class="row">
@@ -46,16 +50,17 @@
                 <label for="correo" class="form-label required">Correo</label>
                 <input formControlName="correo" id="correo" type="text" class="form-control" placeholder="Correo"
                     aria-label="Correo">
-                    
+
             </div>
             <div class="col">
                 <label for="pass" class="form-label required">Contraseña</label>
                 <input formControlName="pass" id="pass" type="password" class="form-control" placeholder="Contraseña"
                     aria-label="Contraseña">
-                    <div class="error" *ngIf="submitted && formulario['pass'].errors">
-                        <div *ngIf="formulario['pass'].errors['required']">Este campo es obligatorio</div>
-                        <div *ngIf="formulario['pass'].errors['pattern']">Debe tener al menos un dígito, una minúscula, una mayúscula y tener como mínimo 8 caracteres</div>
-                    </div>
+                <div class="error" *ngIf="submitted && formulario['pass'].errors">
+                    <div *ngIf="formulario['pass'].errors['required']">Este campo es obligatorio</div>
+                    <div *ngIf="formulario['pass'].errors['pattern']">Debe tener al menos un dígito, una minúscula, una
+                        mayúscula y tener como mínimo 8 caracteres</div>
+                </div>
             </div>
         </div>
         <div class="row pt-3">
@@ -74,7 +79,7 @@
             <div class="col">
                 <label for="ciudad" class="form-label required">Ciudad de residencia</label>
                 <input formControlName="ciudad" id="ciudad" class="form-control" list="ciudades" id="exampleDataList"
-                    placeholder="Escribe para buscar...">
+                    placeholder="Escribe para buscar..." (focus)="this.listaCiudades()">
                 <datalist id="ciudades">
                     <option *ngFor="let item of ciudades" [value]="item">
                 </datalist>
@@ -272,4 +277,65 @@
             </div>
         </div>
     </form>
+    <ng-template #perfilSoloLectura>
+        <form [formGroup]="this.formUsuario">
+            <div class="row">
+                <div class="col d-flex justify-content-center">
+                    <img role="button" (click)="this.abrirFoto(this.formulario['foto'].value)" class="rounded"
+                        src="{{this.formulario['foto'].value}}" alt="" height="250" width="250">
+                </div>
+            </div>
+
+            <div class="row pt-3">
+                <div class="col d-flex justify-content-center">
+                    <p class="h5">{{this.formulario['descripcion'].value}}</p>
+                </div>
+            </div>
+
+            <div class="row pt-3">
+                <div class="col d-flex justify-content-center">
+                    <i class="bi bi-pin-map-fill me-3"></i>
+                    <p>{{this.formulario['ciudad'].value}}</p>
+                </div>
+                <div class="col d-flex justify-content-center">
+                    <ng-container *ngFor="let g of gustosGenero">
+                        <ng-container *ngIf="g.id + '' === this.formulario['genero'].value+''">
+                            <i class="bi bi-{{this.iconoGenero(g.id)}} me-3"></i>
+                            <p>{{g.descripcion}}</p>
+                        </ng-container>
+                    </ng-container>
+                </div>
+                <div class="col d-flex justify-content-center">
+                    <i class="bi bi-person-square me-3"></i>
+                    <p>{{this.formulario['numHijos'].value}} hijos</p>
+                </div>
+            </div>
+
+            
+            <div class="row pt-3">
+                <div class="col">
+                    <label for="deportes" class="form-label"><i class="bi bi-dribbble"></i>  Deportes</label>
+                    <input readonly type="range" class="form-range" min="0" max="100" id="deportes"
+                        [value]="this.formulario['deportes'].value">
+                </div>
+                <div class="col">
+                    <label for="arte" class="form-label"><i class="bi bi-brush-fill"></i>  Arte</label>
+                    <input readonly type="range" class="form-range" min="0" max="100" id="arte"
+                        [value]="this.formulario['arte'].value">
+                </div>
+            </div>
+            <div class="row pt-3">
+                <div class="col">
+                    <label for="cultura" class="form-label"><i class="bi bi-book-fill"></i>  Cultura</label>
+                    <input readonly type="range" class="form-range" min="0" max="100" id="cultura"
+                        [value]="this.formulario['cultura'].value">
+                </div>
+                <div class="col">
+                    <label for="politica" class="form-label"><i class="bi bi-chat-dots-fill"></i>  Política</label>
+                    <input readonly type="range" class="form-range" min="0" max="100" id="politica"
+                        [value]="this.formulario['politica'].value">
+                </div>
+            </div>
+        </form>
+    </ng-template>
 </div>
